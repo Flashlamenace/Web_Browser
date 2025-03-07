@@ -15,7 +15,7 @@ class URL{
 
     protected:
         std::string protocol;
-        std::string host;
+        std::string host; 
         int         port;
     public:
         //Constructor :
@@ -62,7 +62,7 @@ class SOCKET : URL{
     private:
         int socket_fd;
     public:
-        bool connect(){
+        bool connect_to_server(){
             socket_fd = socket(AF_INET, SOCK_STREAM, 0);
             
             if (socket_fd < 0) {std::cerr << "Problem while creating socket. \n";}
@@ -72,7 +72,7 @@ class SOCKET : URL{
             server_addr.sin_port = htons(port);
             inet_pton(AF_INET, host.c_str(), &server_addr.sin_addr);
     
-            if (::connect(socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
+            if (connect(socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
                 std::cerr << "Connection failed\n";
                 close(socket_fd);
                 return false;
