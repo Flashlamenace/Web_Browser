@@ -21,6 +21,7 @@ class URL{
         std::string protocol;
         std::string host; 
         int         port;
+
     public:
         //Constructor :
         //URL(const std::string& protocol, std::string& host) : protocol(protocol), host(host) {}
@@ -67,11 +68,11 @@ class URL{
 //Socket Related
 
 class SOCKET : public URL{
+   
     private:
         int socket_fd;
         
     public:
-
         int connect_to_server(){
             socket_fd = socket(AF_INET, SOCK_STREAM, 0);
             
@@ -97,7 +98,7 @@ class SOCKET : public URL{
                 return 0;
             }
 
-            std::cout << "Connected to " << host << " on port " << port << std::endl;
+            std::cout << "Connected to " << host << " on port " << port << std::endl << std::endl;
 
             freeaddrinfo(res);
            
@@ -112,13 +113,16 @@ class SOCKET : public URL{
         }
 
         std::string receive_request(char *buffer, size_t buffer_size){    
-        
-            int sizeof_msg_received = recv(socket_fd, buffer, buffer_size, 0);
+            
+           int sizeof_msg_received = 0;
+           std::string response ="";
 
-            if (sizeof_msg_received > 0) {
-                buffer[sizeof_msg_received] = '\0'; // Null-terminate the received data
+           while( ( sizeof_msg_received = recv(socket_fd, buffer, buffer_size, 0)) > 0){
+
+                    buffer[sizeof_msg_received] = '\0'; // Null-terminate the received data
+
+                    response.append(buffer);
             }
-        
-        return std::string(buffer);
+        return response;
         }
 };

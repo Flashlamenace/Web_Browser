@@ -1,4 +1,5 @@
 #include "../includes/network.hpp"
+#include "../includes/http.hpp"
 
 #include <cstddef>
 #include <cstring>
@@ -15,8 +16,8 @@ int main(void){
     char request[] = "GET / HTTP/1.0\r\nHost: example.org\r\nUser-Agent: polypous/0.1\r\n Accept: */*\r\nConnection: keep-alive\r\n\r\n";
 
 
-    char buffer[4096];
-    size_t buffer_size = 4096;
+    char buffer[8096];
+    size_t buffer_size = 8096;
 
     Socket.parse_url(url);
     Socket.what_is_port_proto();
@@ -24,8 +25,10 @@ int main(void){
     Socket.connect_to_server();
     Socket.send_request(request);
     
-    std::cout << Socket.receive_request(buffer, buffer_size) << std::endl << std::endl;
-
+    HTTP Header;
+    
+    std::cout <<Header.set_head(Socket.receive_request(buffer, buffer_size)) << std::endl << std::endl;
+   
 return 0;
 }
 
