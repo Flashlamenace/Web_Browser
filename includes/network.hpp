@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <cstddef>
 #include <cstdlib>
 #include <iostream>
@@ -35,7 +36,7 @@ class URL{
 
         //determine the protocol to use.
         void what_is_port_proto(){
-            std::string protocol = get_protocol();
+            const std::string& protocol = get_protocol();
 
                 if (protocol == "http") {
                     set_port(80);
@@ -75,14 +76,6 @@ class SOCKET : public URL{
             socket_fd = socket(AF_INET, SOCK_STREAM, 0);
             
             if (socket_fd < 0) {std::cerr << "Problem while creating socket. \n";}
-
-            /*struct sockaddr_in server_addr;
-            server_addr.sin_family = AF_INET;
-            server_addr.sin_port = htons(port);
-            inet_pton(AF_INET, host.c_str(), &server_addr.sin_addr);
-            
-            std::cout << ": " << inet_ntoa(server_addr.sin_addr) << ": " << ntohs(server_addr.sin_port) << ": " << server_addr.sin_family << std::endl; 
-            */
 
             struct addrinfo hints, *res;
             memset(&hints, 0, sizeof(hints));

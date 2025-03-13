@@ -12,18 +12,8 @@ int main(void){
 
     SOCKET Socket;
 
-    const char *source = "GET / HTTP/1.0\r\nHost: example.org\r\nUser-Agent: polypous/0.1\r\n Accept: */*\r\nConnection: keep-alive\r\n\r\n";
-    size_t length = strlen(source);
-    char *request = (char *)malloc((length + 1) * sizeof(char)); // Allocate memory
+    char request[] = "GET / HTTP/1.0\r\nHost: example.org\r\nUser-Agent: polypous/0.1\r\n Accept: */*\r\nConnection: keep-alive\r\n\r\n";
 
-    if (request == nullptr) {
-        // Handle memory allocation failure
-        std::cerr << "Memory allocation failed!" << std::endl;
-        return 1;
-    }
-
-    // Copy the string into the allocated memory
-    strcpy(request, source);
 
     char buffer[4096];
     size_t buffer_size = 4096;
@@ -36,7 +26,6 @@ int main(void){
     
     std::cout << Socket.receive_request(buffer, buffer_size) << std::endl << std::endl;
 
-    free(request);
 return 0;
 }
 
