@@ -14,7 +14,7 @@ int main(void){
 
     SOCKET Socket;
 
-    char request[] = "GET / HTTP/1.0\r\nHost: example.org\r\nUser-Agent: polypous/0.1\r\n Accept: */*\r\nConnection: keep-alive\r\n\r\n";
+    char request[] = "GET / HTTP/1.0\r\nHost: example.org\r\nUser-Agent: polypous/0.1\r\n Accept: */*\r\nConnection: close\r\n\r\n";
 
 
     char buffer[8096];
@@ -28,8 +28,6 @@ int main(void){
     
     HTTP Header;
     
-    std::cout <<Header.set_head(Socket.receive_request(buffer, buffer_size)) << std::endl << std::endl;
-   
 return 0;
 }
 

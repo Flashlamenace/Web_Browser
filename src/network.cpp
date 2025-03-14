@@ -1,5 +1,8 @@
 #include "../includes/network.hpp"
 
+#include <iostream>
+#include <ostream>
+
 //                           IN URL :
         //Getter :
 std::string URL::get_protocol() const {return protocol;}
@@ -24,7 +27,6 @@ void URL::what_is_port_proto(){
 //Peut être réimplémenter ça en utilisant les stringstream ? plus lisible ?
 void URL::parse_url(std::string& url){
     size_t      position_protocol = url.find("://");
-    //size_t      position_port     = url.find(":", position_protocol);
     std::string protocol = url.substr(0, position_protocol);
     std::string host_and = url.substr(position_protocol + 3);
     size_t      position_host = host_and.find("/");
@@ -39,7 +41,7 @@ void URL::parse_url(std::string& url){
 //                  IN SOCKET
 int SOCKET::connect_to_server(){
     socket_fd = socket(AF_INET, SOCK_STREAM, 0);
-            
+
     if (socket_fd < 0) {std::cerr << "Problem while creating socket. \n";}
 
     struct addrinfo hints, *res;
@@ -89,6 +91,3 @@ std::string SOCKET::receive_request(char *buffer, size_t buffer_size){
     }
 return response;
 }
-
-
-
