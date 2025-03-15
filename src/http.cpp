@@ -2,44 +2,46 @@
 
 // Class HTTP.
         
-HTTP::HTTP(std::string &&response){
+HTTP::HTTP(std::string &&response) : request_line({}){
 
-//Essayer d'implémenter avec stringstream ce sera surement plus élégant et plus efficace ... 
     size_t end_of_head      = response.find("\r\n\r\n");
     size_t status_line_curs = response.find("\r\n");
                
     status_line = response.substr(0               , status_line_curs); 
     head        = response.substr(status_line_curs, end_of_head);
     payload     = response.substr(end_of_head     , response.npos);
-
-               /* Je garde ce bout de code pour montrer que ce projet m'as tenu beaucoup trop longtemps éveillé !
-                *Hhhm oui les espaces ZZZzzzZZZzz Mauvais ça les espaces ... ZZZzzzzZZZ
-                * 
-                *size_t space = 0;
-                *                 
-                *//*Trouver quelque chose de plus propre quand j'aurais dormi ...
-                *while ((space = head.find(" ")) != head.npos){
-                *    
-                *    head.erase(space, 1);
-                *
-                *}
-                */
 }
 
-// Class HEADER :
-HEADER::HEADER(const std::string &key_1, const std::string &value_1) : key(key_1), value(value_1){};
+HTTP::HTTP(){}
 
-std::map <std::string, std::string> RESPONSE_HEADER::parse_header_field(std::string &header_field){
-    
+std::string HTTP::get_head       (){return head;}
+std::string HTTP::get_status_line(){return status_line;}
+std::string HTTP::get_payload    (){return payload;}
+
+std::string HTTP::set_head       (std::string &head_1)       {return head = head_1;}
+std::string HTTP::set_status_line(std::string &status_line_1){return status_line = status_line_1;}
+std::string HTTP::set_payload    (std::string &payload_1)    {return payload = payload_1;}
+
+
+/******************************************************************************************************************************************************************************/
+
+//Class REQUEST :
+
+
+/******************************************************************************************************************************************************************************/
+
+//Class RESPONSE :
+
+RESPONSE::RESPONSE(std::string &&response) : HTTP(std::move(response)){
+
     std::string key;
     std::string value;
-    std::stringstream header_field_stream(header_field);
-    std::map <std::string, std::string> header_value_hm;
+    std::stringstream header_field_stream(get_head());
 
-    while (std::getline(header_field_stream, key, ':')){
-        std::getline(header_field_stream, value);
+    while(std::getline(header_field_stream, key, ':')){
+          std::getline(header_field_stream, value);
        
-        header_value_hm[key] = value; 
+        header_hm[key] = value; 
     }
-    return header_value_hm;
-}
+};
+

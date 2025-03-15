@@ -5,25 +5,22 @@
 #include <cstring>
 
 //                           IN URL :
-        //Getter :
 std::string URL::get_protocol() const {return protocol;}
 std::string URL::get_host    () const {return host;}
         
-        //setter :
 int URL::set_port            (int port1)          {return port = port1;}
 std::string URL::set_protocol(std::string proto1) {return protocol = proto1;}
 std::string URL::set_host    (std::string host1)  {return host = host1;}
 
-        //determine the protocol to use.
 void URL::what_is_port_proto(){
     const std::string& protocol = get_protocol();
 
-        if (protocol == "http") {
-            set_port(80);
-            }
-        else {
-            set_port(443);
-        }
+    if (protocol == "http"){
+        set_port(80);
+    }
+    else{
+        set_port(443);
+    }
 }
 
 URL::URL(std::string& url){
