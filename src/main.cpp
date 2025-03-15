@@ -3,8 +3,7 @@
 
 #include <cstddef>
 #include <cstring>
-#include <ostream>
-
+#include <iostream>
 //test
 int main(void){
  
@@ -12,21 +11,16 @@ int main(void){
     
     char *response;
 
-    SOCKET Socket;
-
     char request[] = "GET / HTTP/1.0\r\nHost: example.org\r\nUser-Agent: polypous/0.1\r\n Accept: */*\r\nConnection: close\r\n\r\n";
 
 
     char buffer[8096];
     size_t buffer_size = 8096;
 
-    Socket.parse_url(url);
-    Socket.what_is_port_proto();
-
-    Socket.connect_to_server();
+    URL Url(url);    
+    SOCKET Socket(Url);
     Socket.send_request(request);
-    
-    HTTP Header;
+    std::cout << "response : " << Socket.receive_request(buffer, buffer_size) << std::endl ;
     
 return 0;
 }

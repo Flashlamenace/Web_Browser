@@ -17,9 +17,13 @@ class URL{
     protected:
         std::string protocol;
         std::string host; 
+        std::string path;
         int         port;
-
+        
     public:   
+        //Constructor
+        URL(std::string& url); 
+
         //Getter :
         std::string get_protocol() const;
         std::string get_host    () const;
@@ -29,21 +33,21 @@ class URL{
         std::string set_protocol(std::string proto1); 
         std::string set_host    (std::string host1);  
         
-        //determine the protocol to use.
+        // A mettre ailleurs : 
         void what_is_port_proto();
-        void parse_url(std::string& url); 
 };
 
 
 //Socket Related
 
-class SOCKET : public URL{
-   
+class SOCKET{
     private:
         int socket_fd;
         
     public:
-        int connect_to_server();        
+        //Constructor :
+        SOCKET(URL &Url);
+
         void send_request(char *request_msg);
         std::string receive_request(char *buffer, size_t buffer_size);
 };

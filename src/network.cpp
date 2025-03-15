@@ -1,7 +1,8 @@
 #include "../includes/network.hpp"
 
 #include <iostream>
-#include <ostream>
+#include <sstream>
+#include <cstring>
 
 //                           IN URL :
         //Getter :
@@ -24,53 +25,55 @@ void URL::what_is_port_proto(){
             set_port(443);
         }
 }
-//Peut être réimplémenter ça en utilisant les stringstream ? plus lisible ?
-void URL::parse_url(std::string& url){
-    size_t      position_protocol = url.find("://");
-    std::string protocol = url.substr(0, position_protocol);
-    std::string host_and = url.substr(position_protocol + 3);
-    size_t      position_host = host_and.find("/");
-    std::string host = host_and.substr(0, position_host);
-            
-    std::cout << "protocol : " << protocol << " Host : " << host << std::endl;
-            
-    set_host    (host);
-    set_protocol(protocol);
+
+URL::URL(std::string& url){
+    std::stringstream url_ss(url);
+
+    std::getline(url_ss, protocol, ':');
+    
+    if (url_ss.peek() == '/'){
+        url_ss.ignore(2);
+    }
+
+    std::getline(url_ss, host, '/');
+    std::getline(url_ss, path);
 }    
 
+
+
+
+
 //                  IN SOCKET
-int SOCKET::connect_to_server(){
-    socket_fd = socket(AF_INET, SOCK_STREAM, 0);
 
-    if (socket_fd < 0) {std::cerr << "Problem while creating socket. \n";}
-
+SOCKET::SOCKET(URL &Url){
+    
+    std::string port = Url.get_protocol();
     struct addrinfo hints, *res;
+
     memset(&hints, 0, sizeof(hints));
-    hints.ai_family = AF_INET;      // Only IPv4 addresses
-    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_family = AF_INET; // IPv4
+    hints.ai_socktype = SOCK_STREAM; // TCP
 
-    std::cout << "host : " << host << " port : " << port << std::endl;
-        
-    int gai_result = getaddrinfo(host.c_str(), std::to_string(port).c_str(), &hints, &res);
-    if (gai_result != 0) {
-        std::cerr << "getaddrinfo failed: " << gai_strerror(gai_result) << std::endl;
-        close(socket_fd);
-        return 0;
-    }
-    if (connect(socket_fd, res->ai_addr, res->ai_addrlen) < 0) {
-        std::cerr << "Connection failed\n";
-        close(socket_fd);
-        freeaddrinfo(res);  // Clean up
-        return 0;
+    if (getaddrinfo(Url.get_host().c_str(), port.c_str(), &hints, &res) != 0) {
+        std::cerr << "getaddrinfo failed: " << gai_strerror(errno) << std::endl; 
     }
 
-    std::cout << "Connected to " << host << " on port " << port << std::endl << std::endl;
+    socket_fd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+   
+    if (socket_fd == -1) {
+        std::cerr << "Could not create socket" << std::endl;
+        freeaddrinfo(res);
+    }
 
-    freeaddrinfo(res);
-           
-    return socket_fd;
+     
+     if (connect(socket_fd, res->ai_addr, res->ai_addrlen) < 0) {
+        std::cerr << "Connection failed" << std::endl;
+        close(socket_fd);
+        freeaddrinfo(res);
+     }
+
+     std::cout << "Connected to server at " << Url.get_host() << ":" << port << std::endl;
 }
-        
         
 void SOCKET::send_request(char *request_msg){
         
