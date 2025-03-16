@@ -22,7 +22,7 @@ class URL{
         
     public:   
         //Constructor
-        URL(std::string& url); 
+        URL(std::string &&url); 
 
         //Getter :
         std::string get_protocol() const;

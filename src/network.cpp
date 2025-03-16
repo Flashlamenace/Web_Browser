@@ -3,6 +3,8 @@
 #include <iostream>
 #include <sstream>
 #include <cstring>
+#include <string>
+
 
 //                           IN URL :
 std::string URL::get_protocol() const {return protocol;}
@@ -23,7 +25,7 @@ void URL::what_is_port_proto(){
     }
 }
 
-URL::URL(std::string& url){
+URL::URL(std::string &&url){
     std::stringstream url_ss(url);
 
     std::getline(url_ss, protocol, ':');

@@ -4,22 +4,21 @@
 #include <cstddef>
 #include <cstring>
 #include <iostream>
-//test
+
+
+
 int main(void){
- 
-    std::string url = "http://exemple.org/";
+    REQUEST Request(GET, "/", HTTP_1_1, "exemple.org");
+    URL Url("http://exemple.org");    
+    SOCKET Socket(Url);
     
     char *response;
-
-    char request[] = "GET / HTTP/1.0\r\nHost: example.org\r\nUser-Agent: polypous/0.1\r\n Accept: */*\r\nConnection: close\r\n\r\n";
-
 
     char buffer[8096];
     size_t buffer_size = 8096;
 
-    URL Url(url);    
-    SOCKET Socket(Url);
-    Socket.send_request(request);
+
+    Socket.send_request(Request.get_request().data());
     std::cout << "response : " << Socket.receive_request(buffer, buffer_size) << std::endl ;
     
 return 0;
