@@ -93,3 +93,53 @@ std::string SOCKET::receive_request(char *buffer, size_t buffer_size){
     }
 return response;
 }
+
+//          In _SSL :
+    
+SSL_context::SSL_context(){
+    SSL_library_init();
+    OpenSSL_add_all_algorithms();
+    SSL_load_error_strings();
+
+    SSL_CTX *ctx = SSL_CTX_new(TLS_client_method());
+
+    if (!ctx) {
+        fprintf(stderr, "SSL_CTX_new() failed.\n");
+    }
+}
+
+SSL_context::~SSL_context(){
+    SSL_CTX_free(ctx);
+}
+
+SSL_CTX *SSL_context::get_ctx(){return ctx;}
+
+
+//TO_DO : Vérifier l'authenticité du certificat du serveur !
+_SSL_connect::_SSL_connect(std::string &hostname, int &socket_fd) : SSL_context(){
+    ssl = SSL_new(get_ctx());
+
+    if(!SSL_set_tlsext_host_name(ssl, hostname.c_str())){
+        fprintf(stderr, "SSL_set_tlsext_host_name() failed.\n");
+    }
+
+    SSL_set_fd(ssl, socket_fd);
+    
+    if(SSL_connect(ssl) == -1) {
+        fprintf(stderr, "SSL_connect() failed.\n");
+    }
+}
+
+_SSL_connect::~_SSL_connect(){
+        SSL_free(ssl);
+}
+
+void _SSL_connect::SSL_send_request(char *&request_msg){
+    SSL_write(ssl, request_msg, strlen(request_msg));
+}
+
+std::string _SSL_connect::SSL_receive_response(char *&buffer){
+    SSL_read(ssl, buffer, sizeof(buffer));
+
+    return (std::string) buffer;
+}
